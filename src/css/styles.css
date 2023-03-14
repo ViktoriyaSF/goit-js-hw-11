@@ -7,14 +7,65 @@ body {
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fafafa;
-  color: #212121;
+  background-color: #5a5b58c4;
+  color: #fafafa;
   line-height: 1.5;
 }
 
-#search-box {
+#search-form {
   font: inherit;
-  padding: 8px;
   max-width: 320px;
   margin-bottom: 16px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+button {
+  border-radius: 4px;
+}
+img {
+  display: block;
+  height: 30vh;
+  object-fit: cover;
+
+  min-width: 200px;
+  width: 100%;
+}
+a {
+  text-decoration: none;
+}
+
+p {
+  margin: 0;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+.photo-card {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  flex-basis: calc((100% - 10%) / 4);
+  min-width: 250px;
+  border: 2px solid rgb(241, 238, 238);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 70%;
+  justify-content: center;
+}
+.info-item {
+  flex-basis: calc((100%-10%) / 5);
+
+  display: flex;
+  flex-direction: column;
 }
