@@ -7,11 +7,26 @@ body {
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #5a5b58c4;
-  color: #fafafa;
+  /* background-color: #5a5b58c4; */
+  /* color: #fafafa; */
   line-height: 1.5;
 }
 
+button {
+  border-radius: 4px;
+  cursor: pointer;
+  background: linear-gradient(
+    0deg,
+    rgb(237, 241, 174) 0%,
+    rgb(164, 238, 245) 100%
+  );
+  margin: 0 auto 0 auto;
+  padding: 8px 20px;
+}
+button:hover,
+button:focus {
+  background: rgb(49, 131, 98);
+}
 #search-form {
   font: inherit;
   max-width: 320px;
@@ -20,9 +35,31 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
-button {
+input {
   border-radius: 4px;
+  margin: 0 auto 0 auto;
+  padding: 8px 20px;
+  background: linear-gradient(
+    0deg,
+    rgb(237, 241, 174) 0%,
+    rgb(164, 238, 245) 100%
+  );
 }
+input:hover,
+input:focus {
+  background: #fafafa;
+}
+
+.load-more {
+  display: block;
+  margin-top: 16px;
+  /* background: linear-gradient(
+    0deg,
+    rgb(235, 242, 104) 0%,
+    rgb(70, 181, 222) 100%
+  ); */
+}
+
 img {
   display: block;
   height: 30vh;
@@ -55,6 +92,9 @@ p {
   border: 2px solid rgb(241, 238, 238);
   border-radius: 10px;
   overflow: hidden;
+  background-color: #0d0d0d;
+  color: #fafafa;
+  text-align: center;
 }
 .info {
   display: flex;

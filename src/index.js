@@ -10,7 +10,7 @@ const url = 'https://pixabay.com/api/';
 const KEY = '34347073-8f1b60398676bada9d735fc2f';
 const restAPI = '&image_type=photo&orientation=horizontal&safesearch=true';
 
-function searchPhoto(namePhoto, page, perPage = 40) {
+function searchPhoto(namePhoto, page = 1, perPage = 40) {
   return fetch(
     `${url}?key=${KEY}&q=${namePhoto}${restAPI}&page=${page}&per_page=${perPage}`
   ).then(res => {
@@ -24,12 +24,23 @@ const galleryPhoto = document.querySelector('.gallery');
 searchFormPoto.addEventListener('submit', onSubmitPhoto);
 async function onSubmitPhoto(e) {
   e.preventDefault();
+  galleryPhoto.innerHTML = '';
   const queryPhoto = e.target.elements.searchQuery.value.trim();
   if (!queryPhoto) {
-    return;
+    return Notify.failure(
+      'Sorry, the search field cannot be empty. Please enter information to search.'
+    );
   }
   const data = await searchPhoto(queryPhoto); // значення що сформоване
-  cardPhoto(data);
+
+  cardPhoto(data); // формуваннякартки
+  messageInfo(data); // формування повідолень
+  e.target.reset(); // чистка input
+
+  // зображення більшої за розміром картинки
+  const lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+  }).refresh();
 }
 
 // функція для створення картки вибираючи по hits
@@ -57,5 +68,12 @@ function cardPhoto(arr) {
   galleryPhoto.insertAdjacentHTML('afterbegin', markUp);
 }
 
-// створення виклику
-const lightbox = new SimpleLightbox('.gallery a').refresh();
+function messageInfo(arr) {
+  if (arr.hits.length === 0) {
+    Notify.warning(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
+  } else {
+    Notify.success(`Hooray! We found ${arr.totalHits} images.`);
+  }
+}
