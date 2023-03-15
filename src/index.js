@@ -18,6 +18,16 @@ function searchPhoto(namePhoto, page = 1, perPage = 40) {
   });
 }
 
+// спрба зробити через axios
+// axios.defaults.baseURL = 'https://pixabay.com/api/';
+
+// async function searchPhoto(namePhoto, page = 1, perPage = 40) {
+//   const response = await axios.get(
+//     `?key=${KEY}&q=${namePhoto}${restAPI}&page=${page}&per_page=${perPage}`
+//   );
+//   return response;
+// }
+
 const searchFormPoto = document.querySelector('#search-form');
 const galleryPhoto = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
