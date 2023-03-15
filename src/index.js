@@ -20,8 +20,13 @@ function searchPhoto(namePhoto, page = 1, perPage = 40) {
 
 const searchFormPoto = document.querySelector('#search-form');
 const galleryPhoto = document.querySelector('.gallery');
+const loadMoreBtn = document.querySelector('.load-more');
+loadMoreBtn.style.display = 'none';
 
 searchFormPoto.addEventListener('submit', onSubmitPhoto);
+loadMoreBtn.addEventListener('click', loadMore);
+
+// кнопка пошуку
 async function onSubmitPhoto(e) {
   e.preventDefault();
   galleryPhoto.innerHTML = '';
@@ -36,11 +41,6 @@ async function onSubmitPhoto(e) {
   cardPhoto(data); // формуваннякартки
   messageInfo(data); // формування повідолень
   e.target.reset(); // чистка input
-
-  // зображення більшої за розміром картинки
-  const lightbox = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-  }).refresh();
 }
 
 // функція для створення картки вибираючи по hits
@@ -48,24 +48,28 @@ function cardPhoto(arr) {
   const markUp = arr.hits
     .map(el => {
       return `
-  <div class="photo-card">
+    <div class="photo-card">
     <a class="gallery-link" href="${el.largeImageURL}">
     <img src="${el.webformatURL}" alt="${el.tags}" loading="lazy" />
     </a>
     <div class="info">
-      <p class="info-item"><b>Likes</b>${el.likes}
-      </p>
-      <p class="info-item"><b>Views</b>${el.views}
-      </p>
-      <p class="info-item"><b>Comments</b>${el.comments}
-      </p>
-      <p class="info-item"><b>Downloads</b>${el.downloads}
-      </p>
+    <p class="info-item"><b>Likes</b>${el.likes}
+    </p>
+    <p class="info-item"><b>Views</b>${el.views}
+    </p>
+    <p class="info-item"><b>Comments</b>${el.comments}
+    </p>
+    <p class="info-item"><b>Downloads</b>${el.downloads}
+    </p>
     </div>
-  </div>`;
+    </div>`;
     })
     .join('');
   galleryPhoto.insertAdjacentHTML('afterbegin', markUp);
+  // зображення більшої за розміром картинки
+  const lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+  }).refresh();
 }
 
 function messageInfo(arr) {
@@ -77,3 +81,8 @@ function messageInfo(arr) {
     Notify.success(`Hooray! We found ${arr.totalHits} images.`);
   }
 }
+// кнопка завантаження
+// function loadMore(arr) {
+//   if ()
+
+// }

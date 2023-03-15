@@ -27,14 +27,6 @@ button:hover,
 button:focus {
   background: rgb(49, 131, 98);
 }
-#search-form {
-  font: inherit;
-  max-width: 320px;
-  margin-bottom: 16px;
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-}
 input {
   border-radius: 4px;
   margin: 0 auto 0 auto;
@@ -48,6 +40,14 @@ input {
 input:hover,
 input:focus {
   background: #fafafa;
+}
+#search-form {
+  font: inherit;
+  max-width: 320px;
+  margin-bottom: 16px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .load-more {
