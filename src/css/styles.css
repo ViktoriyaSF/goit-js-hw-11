@@ -51,7 +51,7 @@ input:focus {
 }
 
 .load-more {
-  display: block;
+  display: none;
   margin-top: 16px;
   /* background: linear-gradient(
     0deg,

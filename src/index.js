@@ -1,6 +1,6 @@
 import './css/styles.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-// import axios from 'axios';
+import axios from 'axios';
 // Описаний в документації
 import SimpleLightbox from 'simplelightbox';
 // Додатковий імпорт стилів
@@ -21,10 +21,10 @@ function searchPhoto(namePhoto, page = 1, perPage = 40) {
 const searchFormPoto = document.querySelector('#search-form');
 const galleryPhoto = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
-loadMoreBtn.style.display = 'none';
+// loadMoreBtn.style.display = 'none';
 
 searchFormPoto.addEventListener('submit', onSubmitPhoto);
-loadMoreBtn.addEventListener('click', loadMore);
+loadMoreBtn.addEventListener('click', onLoadMore);
 
 // кнопка пошуку
 async function onSubmitPhoto(e) {
@@ -40,7 +40,9 @@ async function onSubmitPhoto(e) {
 
   cardPhoto(data); // формуваннякартки
   messageInfo(data); // формування повідолень
+  loadMoreBtn.style.display = 'block';
   e.target.reset(); // чистка input
+  onLoadMore(data);
 }
 
 // функція для створення картки вибираючи по hits
@@ -66,23 +68,28 @@ function cardPhoto(arr) {
     })
     .join('');
   galleryPhoto.insertAdjacentHTML('afterbegin', markUp);
-  // зображення більшої за розміром картинки
+  // зображення слайд картинки
   const lightbox = new SimpleLightbox('.gallery a', {
     captionsData: 'alt',
   }).refresh();
 }
-
 function messageInfo(arr) {
   if (arr.hits.length === 0) {
     Notify.warning(
       'Sorry, there are no images matching your search query. Please try again.'
     );
-  } else {
-    Notify.success(`Hooray! We found ${arr.totalHits} images.`);
   }
+  return Notify.success(`Hooray! We found ${arr.totalHits} images.`);
 }
 // кнопка завантаження
-// function loadMore(arr) {
-//   if ()
 
-// }
+function onLoadMore(arr) {
+  console.log(arr.hits.length);
+  if (arr.hits.length > 40) {
+    // loadMoreBtn.style.display = 'block';
+    page += 1;
+    return searchPhoto(namePhoto, page, perPage);
+  } else {
+    Notify.info("We're sorry, but you've reached the end of search results.");
+  }
+}
