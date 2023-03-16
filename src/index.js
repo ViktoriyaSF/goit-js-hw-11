@@ -116,3 +116,15 @@ function stopSearch(arr) {
     loadMoreBtn.style.display = 'block';
   }
 }
+
+//
+function smoothScroll() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 1.6,
+    behavior: 'smooth',
+  });
+}
