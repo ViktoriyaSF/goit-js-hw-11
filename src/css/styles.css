@@ -96,6 +96,10 @@ p {
   color: #fafafa;
   text-align: center;
 }
+.photo-card:hover,
+.photo-card:focus {
+  box-shadow: -10px 9px 12px -1px rgba(0, 0, 0, 1);
+}
 .info {
   display: flex;
   flex-wrap: wrap;
