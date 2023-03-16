@@ -6,32 +6,35 @@ import SimpleLightbox from 'simplelightbox';
 // Додатковий імпорт стилів
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const url = 'https://pixabay.com/api/';
+// ---------------- запит HTML
 const KEY = '34347073-8f1b60398676bada9d735fc2f';
 const restAPI = '&image_type=photo&orientation=horizontal&safesearch=true';
+let page = 1;
+let namePhoto = ' ';
+const perPage = 40;
 
-function searchPhoto(namePhoto, page = 1, perPage = 40) {
-  return fetch(
-    `${url}?key=${KEY}&q=${namePhoto}${restAPI}&page=${page}&per_page=${perPage}`
-  ).then(res => {
-    return res.json();
-  });
-}
-
-// спрба зробити через axios
-// axios.defaults.baseURL = 'https://pixabay.com/api/';
-
-// async function searchPhoto(namePhoto, page = 1, perPage = 40) {
-//   const response = await axios.get(
-//     `?key=${KEY}&q=${namePhoto}${restAPI}&page=${page}&per_page=${perPage}`
-//   );
-//   return response;
+// const url = 'https://pixabay.com/api/';
+// function searchPhoto(namePhoto, page = 1, perPage = 40) {
+//   return fetch(
+//     `${url}?key=${KEY}&q=${namePhoto}${restAPI}&page=${page}&per_page=${perPage}`
+//   ).then(res => {
+//     return res.json();
+//   });
 // }
+
+// спроба зробити через axios
+axios.defaults.baseURL = 'https://pixabay.com/api/';
+
+async function searchPhoto(namePhoto, page = 1, perPage = 40) {
+  const response = await axios.get(
+    `?key=${KEY}&q=${namePhoto}${restAPI}&page=${page}&per_page=${perPage}`
+  );
+  return response;
+}
 
 const searchFormPoto = document.querySelector('#search-form');
 const galleryPhoto = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
-// loadMoreBtn.style.display = 'none';
 
 searchFormPoto.addEventListener('submit', onSubmitPhoto);
 loadMoreBtn.addEventListener('click', onLoadMore);
@@ -40,22 +43,31 @@ loadMoreBtn.addEventListener('click', onLoadMore);
 async function onSubmitPhoto(e) {
   e.preventDefault();
   galleryPhoto.innerHTML = '';
-  const queryPhoto = e.target.elements.searchQuery.value.trim();
-  if (!queryPhoto) {
+  loadMoreBtn.style.display = 'none';
+
+  namePhoto = e.target.elements.searchQuery.value.trim();
+  if (!namePhoto) {
     return Notify.failure(
       'Sorry, the search field cannot be empty. Please enter information to search.'
     );
   }
-  const data = await searchPhoto(queryPhoto); // значення що сформоване
+  const { data } = await searchPhoto(namePhoto); // значення що сформоване
 
-  cardPhoto(data); // формуваннякартки
-  messageInfo(data); // формування повідолень
-  loadMoreBtn.style.display = 'block';
+  cardPhoto(data); // формування картки
+  messageInfo(data); // формування повідомлення
+  stopSearch(data); // всі зображення знайденні
   e.target.reset(); // чистка input
-  onLoadMore(data);
+}
+// кнопка завантаження
+function onLoadMore() {
+  page += 1;
+  searchPhoto(namePhoto, page, perPage).then(({ data }) => {
+    cardPhoto(data);
+    stopSearch(data);
+  });
 }
 
-// функція для створення картки вибираючи по hits
+// функція для створення картки HTML вибираючи по hits
 function cardPhoto(arr) {
   const markUp = arr.hits
     .map(el => {
@@ -77,29 +89,30 @@ function cardPhoto(arr) {
     </div>`;
     })
     .join('');
-  galleryPhoto.insertAdjacentHTML('afterbegin', markUp);
+  galleryPhoto.insertAdjacentHTML('beforeend', markUp);
   // зображення слайд картинки
   const lightbox = new SimpleLightbox('.gallery a', {
     captionsData: 'alt',
   }).refresh();
 }
+
+// функції всіх повідомлень
 function messageInfo(arr) {
   if (arr.hits.length === 0) {
     Notify.warning(
       'Sorry, there are no images matching your search query. Please try again.'
     );
   }
-  return Notify.success(`Hooray! We found ${arr.totalHits} images.`);
+  if (arr.totalHits !== 0) {
+    Notify.success(`Hooray! We found ${arr.totalHits} images.`);
+  }
 }
-// кнопка завантаження
-
-function onLoadMore(arr) {
-  console.log(arr.hits.length);
-  if (arr.hits.length > 40) {
-    // loadMoreBtn.style.display = 'block';
-    page += 1;
-    return searchPhoto(namePhoto, page, perPage);
-  } else {
+function stopSearch(arr) {
+  if (arr.hits.length < 40 && arr.hits.length > 0) {
+    loadMoreBtn.style.display = 'none';
     Notify.info("We're sorry, but you've reached the end of search results.");
+  }
+  if (arr.hits.length === 40) {
+    loadMoreBtn.style.display = 'block';
   }
 }
