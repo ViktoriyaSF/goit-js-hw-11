@@ -26,11 +26,16 @@ const perPage = 40;
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 
 async function searchPhoto(namePhoto, page = 1, perPage = 40) {
-  const response = await axios.get(
+  const response = await axios(
     `?key=${KEY}&q=${namePhoto}${restAPI}&page=${page}&per_page=${perPage}`
   );
   return response;
 }
+
+// зображення слайд картинки
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+});
 
 const searchFormPoto = document.querySelector('#search-form');
 const galleryPhoto = document.querySelector('.gallery');
@@ -59,12 +64,16 @@ async function onSubmitPhoto(e) {
   e.target.reset(); // чистка input
 }
 // кнопка завантаження
-function onLoadMore() {
+async function onLoadMore() {
   page += 1;
-  searchPhoto(namePhoto, page, perPage).then(({ data }) => {
-    cardPhoto(data);
-    stopSearch(data);
-  });
+  // searchPhoto(namePhoto, page, perPage).then(({ data }) => {
+  //   cardPhoto(data);
+  //   stopSearch(data);
+  // });
+  const { data } = await searchPhoto(namePhoto, page, perPage);
+  cardPhoto(data);
+  stopSearch(data);
+  smoothScroll(); // прокрутка зображення
 }
 
 // функція для створення картки HTML вибираючи по hits
@@ -90,10 +99,8 @@ function cardPhoto(arr) {
     })
     .join('');
   galleryPhoto.insertAdjacentHTML('beforeend', markUp);
-  // зображення слайд картинки
-  const lightbox = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-  }).refresh();
+  // зображення слайд картинки  в один загальний
+  lightbox.refresh();
 }
 
 // функції всіх повідомлень
@@ -117,14 +124,39 @@ function stopSearch(arr) {
   }
 }
 
-//
-// function smoothScroll() {
-//   const { height: cardHeight } = document
-//     .querySelector('.gallery')
-//     .firstElementChild.getBoundingClientRect();
+//плавний перехід
+function smoothScroll() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
 
-//   window.scrollBy({
-//     top: cardHeight * 1.6,
-//     behavior: 'smooth',
-//   });
-// }
+  window.scrollBy({
+    top: cardHeight * 3,
+    behavior: 'smooth',
+  });
+}
+// кнопка підняття вверх
+galleryPhoto.insertAdjacentHTML(
+  'beforebegin',
+  `<button id="myBtn" title="Go UP">UP</button>`
+);
+
+window.onscroll = function () {
+  scrollFunction();
+};
+const myBtn = document.getElementById('myBtn');
+
+function scrollFunction() {
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    myBtn.style.display = 'block';
+  } else {
+    myBtn.style.display = 'none';
+  }
+}
+
+myBtn.addEventListener('click', topFunction);
+
+function topFunction() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}
